@@ -21,7 +21,9 @@ import { useNavigate } from "react-router";
 
 // Define the structure of the trip form data
 export const loader = async () => {
-  const response = await fetch("https://restcountries.com/v3.1/all?fields=");
+  const response = await fetch(
+    "https://restcountries.com/v3.1/all?fields=name,flag"
+  );
   const data = await response.json();
 
   return data.map((country: any) => ({

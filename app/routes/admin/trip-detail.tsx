@@ -9,7 +9,7 @@ import {
   ChipDirective,
 } from "@syncfusion/ej2-react-buttons";
 
-// Get trips
+// Fetch trips
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { tripId } = params;
   if (!tripId) throw new Error("Trip ID is required");
