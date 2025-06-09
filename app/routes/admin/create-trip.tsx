@@ -21,7 +21,7 @@ import { useNavigate } from "react-router";
 
 // Define the structure of the trip form data
 export const loader = async () => {
-  const response = await fetch("https://restcountries.com/v3.1/all");
+  const response = await fetch("https://restcountries.com/v3.1/all?fields=");
   const data = await response.json();
 
   return data.map((country: any) => ({
@@ -29,13 +29,12 @@ export const loader = async () => {
     coordinates: country.latlng,
     value: country.name.common,
     openStreetMap: country.maps?.openStreetMap,
-  }));
+  })) as Country[];
 };
 
 const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
-  // @ts-ignore
-  const countries = loaderData as Country[];
   const navigate = useNavigate();
+  const countries = loaderData as Country[];
 
   const [formData, setFormData] = useState<TripFormData>({
     country: countries[0]?.name || "",
@@ -47,6 +46,14 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Handle input changes
+  const handleChange = async (
+    key: keyof TripFormData,
+    value: string | number
+  ) => {
+    setFormData({ ...formData, [key]: value });
+  };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -92,7 +99,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
         body: JSON.stringify({
           country: formData.country,
           numberOfDays: formData.duration,
-          travelStyles: formData.travelStyle,
+          travelStyle: formData.travelStyle,
           interests: formData.interest,
           budget: formData.budget,
           groupType: formData.groupType,
@@ -104,28 +111,14 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
 
       // Check if the trip was created successfully and navigate to the trip page
       if (result?.id) navigate(`/trips/${result.id}`);
-      else console.error("Failed to generate a trip");
+      else console.error("Failed to generate itinerary");
     } catch (error) {
-      console.error("Error generating trip:", error);
-      setError("Failed to generate trip. Please try again later.");
+      console.error("Error generating itinerary", error);
+      setError("Failed to generate itinerary. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
-
-  // Handle input changes
-  const handleChange = async (
-    key: keyof TripFormData,
-    value: string | number
-  ) => {
-    setFormData({ ...formData, [key]: value });
-  };
-
-  // Convert loaderData to Country type
-  const countryData = countries.map((country) => ({
-    text: country.name,
-    value: country.value,
-  }));
 
   // Coordinates for the selected country
   const mapData = [
@@ -137,6 +130,12 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
           ?.coordinates || [],
     },
   ];
+
+  // Convert loaderData to Country type
+  const countryData = countries.map((country) => ({
+    text: country.name,
+    value: country.value,
+  }));
 
   return (
     <main className="flex flex-col gap-10 pb-20 wrapper">
