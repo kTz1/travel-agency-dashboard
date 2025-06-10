@@ -1,24 +1,57 @@
 import { Header, StatsCard, TripCard } from "../../../components";
-import { dashboardStats, user, allTrips } from "~/constants";
-import { getUser } from "~/appwrite/auth";
+import { getAllUsers, getUser } from "~/appwrite/auth";
 import type { Route } from "./+types/dashboard";
-import { getUsersAndTripsStats } from "~/appwrite/dashboard";
-
-const { totalUsers, usersJointed, totalTrips, tripsCreated, userRole } =
-  dashboardStats;
+import {
+  getTripsByTravelStyle,
+  getUserGrowthPerDay,
+  getUsersAndTripsStats,
+} from "~/appwrite/dashboard";
+import { getAllTrips } from "~/appwrite/trips";
+import { parseTripData } from "~/lib/utils";
 
 export const clientLoader = async () => {
-  const [user, dashboardStats] = await Promise.all([
-    getUser(),
-    getUsersAndTripsStats(),
+  const [
+    user,
+    dashboardStats,
+    trips,
+    userGrowth,
+    tripsByTravelStyle,
+    allUsers,
+  ] = await Promise.all([
+    await getUser(),
+    await getUsersAndTripsStats(),
+    await getAllTrips(4, 0),
+    await getUserGrowthPerDay(),
+    await getTripsByTravelStyle(),
+    await getAllUsers(4, 0),
   ]);
 
-  return { user, dashboardStats };
+  const allTrips = trips.allTrips.map(({ $id, tripDetails, imageUrls }) => ({
+    id: $id,
+    ...parseTripData(tripDetails),
+    imageUrls: imageUrls ?? [],
+  }));
+
+  const mappedUsers: UsersItineraryCount[] = allUsers.users.map((user) => ({
+    imageUrl: user.imageUrl,
+    name: user.name,
+    count: user.itineraryCount,
+  }));
+
+  return {
+    user,
+    dashboardStats,
+    allTrips,
+    userGrowth,
+    tripsByTravelStyle,
+    allUsers: mappedUsers,
+  };
 };
 
 const Dashboard = ({ loaderData }: Route.ComponentProps) => {
   const user = loaderData.user as User | null;
-  const { dashboardStats } = loaderData;
+  const { dashboardStats, allTrips, userGrowth, tripsByTravelStyle, allUsers } =
+    loaderData;
 
   return (
     <main className="dashboard wrapper">
@@ -53,19 +86,17 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
       <section className="container">
         <h1 className="text-xl font-semibold text-dark-100">Created Trips</h1>
         <div className="trip-grid">
-          {allTrips
-            .slice(0, 4)
-            .map(({ id, name, imageUrls, itinerary, tags, estimatedPrice }) => (
-              <TripCard
-                key={id}
-                id={id.toString()}
-                name={name}
-                imageUrl={imageUrls[0]}
-                location={itinerary?.[0]?.location ?? "N/A"}
-                tags={tags}
-                price={estimatedPrice}
-              />
-            ))}
+          {allTrips.map((trip) => (
+            <TripCard
+              key={trip.id}
+              id={trip.id.toString()}
+              name={trip.name!}
+              imageUrl={trip.imageUrls[0]}
+              location={trip.itinerary?.[0]?.location ?? ""}
+              tags={[trip.interests!, trip.travelStyle!]}
+              price={trip.estimatedPrice!}
+            />
+          ))}
         </div>
       </section>
     </main>
