@@ -8,6 +8,18 @@ import {
 } from "~/appwrite/dashboard";
 import { getAllTrips } from "~/appwrite/trips";
 import { parseTripData } from "~/lib/utils";
+import {
+  Category,
+  ChartComponent,
+  ColumnSeries,
+  DataLabel,
+  Inject,
+  SeriesCollectionDirective,
+  SeriesDirective,
+  SplineAreaSeries,
+  Tooltip,
+} from "@syncfusion/ej2-react-charts";
+import { userXAxis, userYAxis } from "~/constants";
 
 export const clientLoader = async () => {
   const [
@@ -98,6 +110,38 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
             />
           ))}
         </div>
+      </section>
+
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <ChartComponent
+          id="chart-1"
+          primaryXAxis={userXAxis}
+          primaryYAxis={userYAxis}
+          title="User Growth"
+          tooltip={{ enable: true }}
+        >
+          <Inject
+            services={[
+              ColumnSeries,
+              SplineAreaSeries,
+              Category,
+              DataLabel,
+              Tooltip,
+            ]}
+          />
+
+          <SeriesCollectionDirective>
+            <SeriesDirective
+              dataSource={userGrowth}
+              xName="day"
+              yName="count"
+              type="Column"
+              name="Column"
+              columnWidth={0.3}
+              cornerRadius={{ topLeft: 10, topRight: 10 }}
+            />
+          </SeriesCollectionDirective>
+        </ChartComponent>
       </section>
     </main>
   );

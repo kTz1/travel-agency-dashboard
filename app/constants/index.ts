@@ -103,7 +103,7 @@ export const comboBoxItems = {
 } as Record<keyof TripFormData, string[]>;
 
 export const userXAxis: AxisModel = { valueType: "Category", title: "Day" };
-export const useryAxis: AxisModel = {
+export const userYAxis: AxisModel = {
   minimum: 0,
   maximum: 10,
   interval: 2,
