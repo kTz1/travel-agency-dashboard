@@ -116,7 +116,7 @@ export const tripXAxis: AxisModel = {
   majorGridLines: { width: 0 },
 };
 
-export const tripyAxis: AxisModel = {
+export const tripYAxis: AxisModel = {
   minimum: 0,
   maximum: 10,
   interval: 2,
