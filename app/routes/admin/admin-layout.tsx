@@ -12,9 +12,11 @@ export async function clientLoader() {
     if (!user.$id) return redirect("/sign-in");
 
     const existingUser = await getExistingUser(user.$id);
-    if (existingUser?.status === "user") {
-      return redirect("/");
-    }
+
+    // If user is not an admin, redirect to home page
+    //if (existingUser?.status === "user") {
+    //return redirect("/");
+    //}
 
     return existingUser?.$id ? existingUser : await storeUserData();
   } catch (error) {
