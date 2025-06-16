@@ -26,12 +26,28 @@ export const links: Route.LinksFunction = () => [
 
 registerLicense(import.meta.env.VITE_SYNCFUSION_LICENSE_KEY);
 
+new PerformanceObserver((entryList) => {
+  for (const entry of entryList.getEntries()) {
+    // Only LargestContentfulPaint entries have the 'element' property
+    if (entry.entryType === "largest-contentful-paint") {
+      const lcpEntry = entry as PerformanceEntry & { element?: Element };
+      const elm = lcpEntry.element;
+      console.log(elm);
+    }
+  }
+}).observe({ type: "largest-contentful-paint", buffered: true });
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <title>Tourvisto Dashboard</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content="Dynamic travel dashboard with personalized travel suggestions, charts and tables using React Router v7, Syncfusion, Appwrite, and Gemini AI. Authentication, create interactive charts, and integrate Gemini AI for outstanding features."
+        />
         <Meta />
         <Links />
       </head>

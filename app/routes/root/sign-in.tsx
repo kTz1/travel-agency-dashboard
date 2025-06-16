@@ -33,7 +33,7 @@ const SignIn = () => {
             <h2 className="p-28-semibold text-dark-100 text-center">
               Start Your Travel Journey
             </h2>
-            <p className="p-18-regular text-center text-gray-100 !leading-7">
+            <p className="p-18-regular text-center text-gray-900 !leading-7">
               Sign in with Google to manage destinations, itineraries, and user
               activity with ease.
             </p>
