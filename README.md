@@ -64,10 +64,8 @@ VITE_APPWRITE_DATABASE_ID=
 VITE_APPWRITE_USERS_COLLECTION_ID=
 VITE_APPWRITE_TRIPS_COLLECTION_ID=
 VITE_APPWRITE_API_ENDPOINT=
-
 # Gemini
 GEMINI_API_KEY=
-
 # Unsplash
 UNSPLASH_ACCESS_KEY=
 ```
@@ -78,7 +76,7 @@ UNSPLASH_ACCESS_KEY=
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser to view the project.
+Open [http://localhost:5173](http://localhost:5173) in your browser to view the project.<b> To open the application, click the sign-out icon, sign in again, and then click on the dashboard.</b>
 
 ## <a name="tech-stack">🚀 Deploy on Vercel</a>
 
@@ -105,16 +103,6 @@ Install the dependencies:
 ```bash
 npm install
 ```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
 
 ## Building for Production
 
